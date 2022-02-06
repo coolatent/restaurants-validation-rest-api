@@ -2,6 +2,30 @@ const express = require('express');
 const restaurantModel = require('../models/restaurant');
 const app = express();
 
+//post
+app.post('/restaurants', async (req, res) => {
+  
+  console.log(req.body)
+  const restaurant = new restaurantModel(req.body);
+  
+  try {
+    await restaurant.save((err) => {
+      if(err){
+        //Custome error handling
+        //console.log(err.errors['firstname'].message)
+        //console.log(err.errors['lastname'].message)
+        //console.log(err.errors['gender'].message)
+        //console.log(err.errors['salary'].message)
+        res.send(err)
+      }else{
+        res.send(restaurant);
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 //Read ALL
 //http://localhost:8081/employees
 app.get('/restaurants', async (req, res) => {
@@ -56,6 +80,8 @@ app.get('/restaurants/Delicatessen', async (req, res) => {
     res.status(500).send(err);
   }
 });
+
+
 
 // //Read By ID
 // //http://localhost:8081/employee?id=60174acfcde1ab2e78a3a9b0
@@ -193,28 +219,7 @@ app.get('/employees/test', async (req, res) => {
     }
 */
 //http://localhost:8081/employee
-app.post('/restaurants', async (req, res) => {
-  
-    console.log(req.body)
-    const restaurant = new restaurantModel(req.body);
-    
-    try {
-      await restaurant.save((err) => {
-        if(err){
-          //Custome error handling
-          //console.log(err.errors['firstname'].message)
-          //console.log(err.errors['lastname'].message)
-          //console.log(err.errors['gender'].message)
-          //console.log(err.errors['salary'].message)
-          res.send(err)
-        }else{
-          res.send(restaurant);
-        }
-      });
-    } catch (err) {
-      res.status(500).send(err);
-    }
-  });
+
 
 //Update Record
 //http://localhost:8081/employee/60174acfcde1ab2e78a3a9b0
