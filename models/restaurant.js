@@ -1,33 +1,35 @@
 const mongoose = require('mongoose');
 
-const EmployeeSchema = new mongoose.Schema({
-  firstname: {
-    type: String
+const RestaurantSchema = new mongoose.Schema({
+  address: {
+    building: {
+      type: Number
   },
-  lastname: {
-    type: String
+  street: {
+      type: String,
+      required: true
   },
-  email: {
-    type: String
+  zipcode: {
+      type: Number
+  }
   },
-  gender: {
-    type: String
+  city: {
+    type: String,
+    required: true
   },
-  city:{
-    type: String
+  cuisine: {
+    type: String,
+    required: true
   },
-  designation: {
-    type: String
+  name: {
+    type: String,
+    required: true
   },
-  salary: {
-    type: Number
-  },
-  created: { 
-    type: Date
-  },
-  updatedat: { 
-    type: Date
-  },
+  restaurant_id:{
+    type: Number,
+    required: true
+   },
+
 });
 
 //Declare Virtual Fields
@@ -44,7 +46,7 @@ const EmployeeSchema = new mongoose.Schema({
 
 
 
-EmployeeSchema.pre('save', (next) => {
+RestaurantSchema.pre('save', (next) => {
   console.log("Before Save")
   let now = Date.now()
    
@@ -58,7 +60,7 @@ EmployeeSchema.pre('save', (next) => {
   next()
 });
 
-EmployeeSchema.pre('findOneAndUpdate', (next) => {
+RestaurantSchema.pre('findOneAndUpdate', (next) => {
   console.log("Before findOneAndUpdate")
   let now = Date.now()
   this.updatedat = now
@@ -67,21 +69,21 @@ EmployeeSchema.pre('findOneAndUpdate', (next) => {
 });
 
 
-EmployeeSchema.post('init', (doc) => {
+RestaurantSchema.post('init', (doc) => {
   console.log('%s has been initialized from the db', doc._id);
 });
 
-EmployeeSchema.post('validate', (doc) => {
+RestaurantSchema.post('validate', (doc) => {
   console.log('%s has been validated (but not saved yet)', doc._id);
 });
 
-EmployeeSchema.post('save', (doc) => {
+RestaurantSchema.post('save', (doc) => {
   console.log('%s has been saved', doc._id);
 });
 
-EmployeeSchema.post('remove', (doc) => {
+RestaurantSchema.post('remove', (doc) => {
   console.log('%s has been removed', doc._id);
 });
 
-const Employee = mongoose.model("Employee", EmployeeSchema);
-module.exports = Employee;
+const Restaurant = mongoose.model("Restaurant", RestaurantSchema);
+module.exports = Restaurant;

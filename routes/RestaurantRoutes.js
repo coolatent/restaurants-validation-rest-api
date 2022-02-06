@@ -1,11 +1,11 @@
 const express = require('express');
-const employeeModel = require('../models/Employee');
+const restaurantModel = require('../models/restaurant');
 const app = express();
 
 //Read ALL
 //http://localhost:8081/employees
-app.get('/employees', async (req, res) => {
-  const employees = await employeeModel.find({});
+app.get('/restaurants', async (req, res) => {
+  const restaurants = await restaurantModel.find({});
   //Sorting
   //use "asc", "desc", "ascending", "descending", 1, or -1
   //const employees = await employeeModel.find({}).sort({'firstname': -1});
@@ -14,26 +14,62 @@ app.get('/employees', async (req, res) => {
   //const employees = await employeeModel.find({}).select("firstname lastname salary").sort({'salary' : 'desc'});  
   
   try {
-    console.log(employees[0].surname)
-    res.status(200).send(employees);
+    console.log(restaurants[0].name)
+    res.status(200).send(restaurants);
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
-//Read By ID
-//http://localhost:8081/employee?id=60174acfcde1ab2e78a3a9b0
-app.get('/employee', async (req, res) => {
-  //const employees = await employeeModel.find({_id: req.query.id});
-  //const employees = await employeeModel.findById(req.query.id);
-  const employees = await employeeModel.find({_id: req.query.id}).select("firstname lastname salary");
-
+app.get('/restaurants/cuisine/:cuisine', async (req, res) => {
+  const cuisine = req.params.cuisine
+  const restaurants = await restaurantModel.find({cuisine:cuisine});
   try {
-    res.send(employees);
+    res.send(restaurants);
   } catch (err) {
     res.status(500).send(err);
   }
 });
+
+//localhost:3000/restaurants?sortBy=ASC
+//localhost:3000/restaurants?sortBy=DESC
+app.get('/restaurants?sortBy=ASC', async (req, res) => {
+  //Select Specific Column
+  // const sort = req.query.sortBy
+  const restaurants = await restaurantModel.find({}).select("id cuisine name city restaurant_id").sort({'restaurant_id' : 1});  
+  
+  try {
+    res.send(restaurants);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+//http://localhost:3000/restaurants/Delicatessen
+app.get('/restaurants/Delicatessen', async (req, res) => {
+  //Select Specific Column
+  const sort = req.query.sortBy
+  const restaurants = await restaurantModel.find({cuisine: 'Delicatessen', city: {$ne : 'Brooklyn'}}).select("cuisine name city").sort({'name' : 'asc'});  
+  
+  try {
+    res.send(restaurants);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// //Read By ID
+// //http://localhost:8081/employee?id=60174acfcde1ab2e78a3a9b0
+// app.get('/restaurant', async (req, res) => {
+//   //const employees = await employeeModel.find({_id: req.query.id});
+//   //const employees = await employeeModel.findById(req.query.id);
+//   const restaurants = await restaurantModel.find({_id: req.query.id}).select("cuisine");
+
+//   try {
+//     res.send(restaurants);
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+// });
 
 //Search By First Name - PATH Parameter
 //http://localhost:8081/employees/firstname/pritesh
@@ -157,13 +193,13 @@ app.get('/employees/test', async (req, res) => {
     }
 */
 //http://localhost:8081/employee
-app.post('/employee', async (req, res) => {
+app.post('/restaurants', async (req, res) => {
   
     console.log(req.body)
-    const employee = new employeeModel(req.body);
+    const restaurant = new restaurantModel(req.body);
     
     try {
-      await employee.save((err) => {
+      await restaurant.save((err) => {
         if(err){
           //Custome error handling
           //console.log(err.errors['firstname'].message)
@@ -172,7 +208,7 @@ app.post('/employee', async (req, res) => {
           //console.log(err.errors['salary'].message)
           res.send(err)
         }else{
-          res.send(employee);
+          res.send(restaurant);
         }
       });
     } catch (err) {

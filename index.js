@@ -1,12 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const employeeRouter = require('./routes/EmployeeRoutes.js');
+const restaurantRouter = require('./routes/RestaurantRoutes.js');
 
 const app = express();
 app.use(express.json()); // Make sure it comes back as json
 
 //TODO - Replace you Connection String here
-mongoose.connect('PASTE_YOUR_CONNECTION_STRING_HERE', {
+mongoose.connect('mongodb+srv://joojoo:para123@cluster0.iae4h.mongodb.net/fullstack2comp3133?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(success => {
@@ -15,6 +15,6 @@ mongoose.connect('PASTE_YOUR_CONNECTION_STRING_HERE', {
   console.log('Error Mongodb connection')
 });
 
-app.use(employeeRouter);
+app.use(restaurantRouter);
 
-app.listen(8081, () => { console.log('Server is running...') });
+app.listen(3000, () => { console.log('Server is running on port 3000...') });
